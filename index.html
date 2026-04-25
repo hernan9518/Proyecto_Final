@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UDENAR · Reportes de Infraestructura</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-seal">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="28" stroke="currentColor" stroke-width="2"/>
+          <circle cx="30" cy="30" r="20" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="30" y="26" text-anchor="middle" font-size="8" font-weight="700" fill="currentColor" font-family="serif">UN</text>
+          <text x="30" y="36" text-anchor="middle" font-size="5" fill="currentColor" font-family="serif">1904</text>
+          <path d="M10 30 Q30 18 50 30" stroke="currentColor" stroke-width="1" fill="none"/>
+          <path d="M10 30 Q30 42 50 30" stroke="currentColor" stroke-width="1" fill="none"/>
+        </svg>
+      </div>
+      <div>
+        <div class="topbar-title">Universidad de Nariño</div>
+        <div class="topbar-subtitle">Sistema de Reportes de Infraestructura</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="nav-email" id="navEmail"></span>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="dash-layout">
+
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Módulos</div>
+        <a class="sidebar-item active" data-tab="reportes">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Reportes
+        </a>
+        <a class="sidebar-item" data-tab="nuevo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nuevo Reporte
+        </a>
+        <div class="sidebar-section-label" style="margin-top:1.5rem">Filtros rápidos</div>
+        <a class="sidebar-item filter-item active" data-filter="all">Todos</a>
+        <a class="sidebar-item filter-item" data-filter="Pendiente">Pendientes</a>
+        <a class="sidebar-item filter-item" data-filter="En proceso">En proceso</a>
+        <a class="sidebar-item filter-item" data-filter="Resuelto">Resueltos</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+
+      <!-- TAB: Reportes -->
+      <div id="tabReportes" class="tab-panel active">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Reportes de Infraestructura</h1>
+            <p class="panel-desc">Incidencias registradas por la comunidad universitaria</p>
+          </div>
+          <button class="btn-action" id="btnRefresh">↻ Actualizar</button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <span class="stat-num" id="statTotal">0</span>
+            <span class="stat-lbl">Total reportes</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num orange" id="statPendiente">0</span>
+            <span class="stat-lbl">Pendientes</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num blue" id="statEnProceso">0</span>
+            <span class="stat-lbl">En proceso</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num green" id="statResuelto">0</span>
+            <span class="stat-lbl">Resueltos</span>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-card-header">
+            <span class="table-card-title">Listado de incidencias</span>
+            <span class="badge" id="badgeCount">0 registros</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tipo de problema</th>
+                  <th>Ubicación</th>
+                  <th>Descripción</th>
+                  <th>Prioridad</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="reportTable">
+                <tr class="empty-row"><td colspan="8">Cargando datos...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Nuevo Reporte -->
+      <div id="tabNuevo" class="tab-panel">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Registrar nuevo reporte</h1>
+            <p class="panel-desc">Completa el formulario para registrar una incidencia en el campus</p>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div id="formMsg" class="form-msg"></div>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Tipo de problema <span class="req">*</span></label>
+              <select id="fTipo">
+                <option value="">Selecciona una categoría...</option>
+                <option value="Iluminación">💡 Iluminación (luminarias, lámparas)</option>
+                <option value="Proyector / Equipo AV">📽 Proyector / Equipo audiovisual</option>
+                <option value="Red e Internet">🌐 Red e Internet</option>
+                <option value="Baños y Sanitarios">🚽 Baños y Sanitarios</option>
+                <option value="Mobiliario">🪑 Mobiliario (sillas, mesas, tableros)</option>
+                <option value="Infraestructura civil">🏗 Infraestructura civil (paredes, techos, pisos)</option>
+                <option value="Equipos de cómputo">💻 Equipos de cómputo</option>
+                <option value="Eléctrico">⚡ Instalación eléctrica (tomacorrientes, cables)</option>
+                <option value="Otro">📌 Otro</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label>Ubicación / Espacio <span class="req">*</span></label>
+              <input type="text" id="fUbicacion" placeholder="Ej: Bloque 2 – Salón 203, Biblioteca central..."/>
+            </div>
+
+            <div class="form-field full-width">
+              <label>Descripción del problema <span class="req">*</span></label>
+              <textarea id="fDesc" placeholder="Describe con detalle el problema: ¿qué falla?, ¿desde cuándo?, ¿afecta a cuántas personas?..."></textarea>
+            </div>
+
+            <div class="form-field">
+              <label>Prioridad</label>
+              <select id="fPrioridad">
+                <option value="Baja">🟢 Baja – No impide actividades</option>
+                <option value="Media" selected>🟡 Media – Dificulta actividades</option>
+                <option value="Alta">🔴 Alta – Impide actividades académicas</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label>Reportado por</label>
+              <input type="text" id="fReportadoPor" placeholder="Nombre (opcional)"/>
+            </div>
+          </div>
+
+          <button class="btn-submit" id="btnGuardar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Enviar reporte
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
