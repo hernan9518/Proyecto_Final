@@ -1,0 +1,161 @@
+/* css/panel.css — Estilos para panel admin y dashboard */
+
+:root {
+  --udenar-green:   #1a4731;
+  --udenar-gold:    #c9a84c;
+  --bg:             #f4f1eb;
+  --surface:        #ffffff;
+  --text:           #1c1c1c;
+  --text-muted:     #6b6b6b;
+  --radius:         10px;
+  --shadow:         0 2px 16px rgba(0,0,0,.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body.panel-body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HEADER ─────────────────────────────────────── */
+.panel-header {
+  background: var(--udenar-green);
+  color: #fff;
+  padding: 0 2rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+
+.panel-brand {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.panel-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: .85rem;
+}
+
+.role-badge {
+  padding: .2rem .65rem;
+  border-radius: 20px;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.role-badge.admin   { background: var(--udenar-gold); color: #1c1c1c; }
+.role-badge.usuario { background: rgba(255,255,255,.2); color: #fff; border: 1px solid rgba(255,255,255,.4); }
+
+.btn-logout {
+  color: rgba(255,255,255,.7);
+  text-decoration: none;
+  font-size: .8rem;
+  border: 1px solid rgba(255,255,255,.3);
+  padding: .25rem .75rem;
+  border-radius: 6px;
+  transition: all .2s;
+}
+.btn-logout:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+/* ── MAIN ───────────────────────────────────────── */
+.panel-main {
+  max-width: 1000px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ── WELCOME CARD ───────────────────────────────── */
+.welcome-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 2rem 2.5rem;
+  box-shadow: var(--shadow);
+  border-left: 5px solid var(--udenar-green);
+}
+.welcome-card.admin   { border-left-color: var(--udenar-gold); }
+.welcome-card.usuario { border-left-color: var(--udenar-green); }
+
+.welcome-card h1 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.6rem;
+  margin-bottom: .4rem;
+}
+.welcome-card p { color: var(--text-muted); margin-bottom: 1.25rem; }
+
+.info-list {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.info-list li {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+}
+.info-list li span { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); }
+.info-list li strong { font-size: .95rem; }
+
+/* ── GRID DE ACCIONES ───────────────────────────── */
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.admin-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+  transition: transform .2s, box-shadow .2s;
+}
+.admin-card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0,0,0,.1); }
+
+.admin-card-icon { font-size: 2rem; }
+.admin-card h3   { font-family: 'Libre Baskerville', serif; font-size: 1rem; }
+.admin-card p    { font-size: .85rem; color: var(--text-muted); flex: 1; }
+
+/* ── BOTONES ────────────────────────────────────── */
+.btn {
+  display: inline-block;
+  padding: .55rem 1.2rem;
+  border-radius: 6px;
+  font-size: .85rem;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  transition: opacity .2s, transform .1s;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary   { background: var(--udenar-green); color: #fff; }
+.btn-primary:hover { opacity: .85; }
+.btn-secondary { background: transparent; color: var(--udenar-green); border: 1.5px solid var(--udenar-green); }
+.btn-secondary:hover { background: var(--udenar-green); color: #fff; }
+
+/* ── MENSAJES (heredado de style.css si se necesita) */
+.msg { font-size: .85rem; padding: .5rem .75rem; border-radius: 6px; min-height: 1.5rem; }
+.msg.error   { background: #fef2f2; color: #b91c1c; }
+.msg.success { background: #f0fdf4; color: #166534; }
