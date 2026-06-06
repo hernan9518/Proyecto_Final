@@ -12,4 +12,9 @@ RUN mkdir -p /var/www/html/uploads/reportes \
     && chown -R www-data:www-data /var/www/html/uploads \
     && chmod -R 755 /var/www/html/uploads
 
+ENV PORT=80
+ENV APACHE_PORT=80
+
 EXPOSE 80
+
+CMD ["apache2-foreground"]
