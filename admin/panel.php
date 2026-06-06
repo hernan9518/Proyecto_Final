@@ -94,7 +94,7 @@ $user = $_SESSION["user"];
     }
 
     /* SIDEBAR NAV */
-    .nav-item-dash {
+    .nav-item {
       display: flex;
       align-items: center;
       gap: .55rem;
@@ -113,8 +113,8 @@ $user = $_SESSION["user"];
       position: relative;
     }
 
-    .nav-item-dash:hover,
-    .nav-item-dash.active {
+    .nav-item:hover,
+    .nav-item.active {
       background: var(--udenar-green);
       color: #fff;
     }
@@ -182,32 +182,26 @@ $user = $_SESSION["user"];
 <body>
 
   <!-- ═══════════════ HEADER ═══════════════ -->
-  <header class="panel-header">
-    <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
-
-      <!-- Izquierda -->
-      <div class="d-flex align-items-center gap-2">
-        <!-- Toggle sidebar móvil -->
-        <button class="btn btn-sm d-md-none me-1 p-1"
-                style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;"
-                type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Menú">
-          <i class="bi bi-list fs-5"></i>
-        </button>
-        <div class="brand-seal">
-          <img src="../img/logo.png" alt="Logo Universidad de Nariño" />
-        </div>
-        <span class="panel-brand-text">Administración · Reportes</span>
+  <header class="panel-header" style="display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:wrap;gap:.5rem;padding:.6rem 1rem;">
+    <!-- Izquierda -->
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-sm d-md-none p-1"
+              style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;"
+              type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Menú">
+        <i class="bi bi-list fs-5"></i>
+      </button>
+      <div class="brand-seal">
+        <img src="../img/logo.png" alt="Logo Universidad de Nariño" />
       </div>
-
-      <!-- Derecha -->
-      <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span class="role-badge admin">Admin</span>
-        <span class="user-name d-none d-sm-inline">
-          <?= htmlspecialchars($user["nombres"] . " " . $user["apellidos"]) ?>
-        </span>
-        <a href="../php/logout.php" class="btn-logout">Cerrar sesión</a>
-      </div>
-
+      <span class="panel-brand-text">Administración · Reportes</span>
+    </div>
+    <!-- Derecha -->
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <span class="role-badge admin">Admin</span>
+      <span class="user-name d-none d-sm-inline">
+        <?= htmlspecialchars($user["nombres"] . " " . $user["apellidos"]) ?>
+      </span>
+      <a href="../php/logout.php" class="btn-logout">Cerrar sesión</a>
     </div>
   </header>
 
@@ -219,15 +213,15 @@ $user = $_SESSION["user"];
     </div>
     <div class="offcanvas-body p-2">
       <div class="d-flex flex-column gap-1">
-        <button class="nav-item-dash active" data-tab="pendientes">
+        <button class="nav-item active" data-tab="pendientes">
           <i class="bi bi-bell"></i> Pendientes
           <span class="nav-badge" id="badgePendientesOC"></span>
         </button>
-        <button class="nav-item-dash" data-tab="en_proceso">
+        <button class="nav-item" data-tab="en_proceso">
           <i class="bi bi-wrench"></i> En Proceso
           <span class="nav-badge" id="badgeProcesoOC"></span>
         </button>
-        <button class="nav-item-dash" data-tab="completados">
+        <button class="nav-item" data-tab="completados">
           <i class="bi bi-check2-circle"></i> Completados
         </button>
       </div>
@@ -240,15 +234,15 @@ $user = $_SESSION["user"];
     <!-- SIDEBAR desktop -->
     <aside class="d-none d-md-flex flex-column gap-1 p-3 sidebar-col"
            style="background:#fff;border-right:1px solid #dde5d9;">
-      <button class="nav-item-dash active" data-tab="pendientes">
+      <button class="nav-item active" data-tab="pendientes">
         <i class="bi bi-bell"></i> Pendientes
         <span class="nav-badge" id="badgePendientes"></span>
       </button>
-      <button class="nav-item-dash" data-tab="en_proceso">
+      <button class="nav-item" data-tab="en_proceso">
         <i class="bi bi-wrench"></i> En Proceso
         <span class="nav-badge" id="badgeProceso"></span>
       </button>
-      <button class="nav-item-dash" data-tab="completados">
+      <button class="nav-item" data-tab="completados">
         <i class="bi bi-check2-circle"></i> Completados
       </button>
     </aside>
@@ -316,31 +310,12 @@ $user = $_SESSION["user"];
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // ── Tab switching ─────────────────────────────────────────
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-item-dash').forEach(b => b.classList.remove('active'));
-
-      const panel = document.getElementById('tab-' + tabName);
-      if (panel) panel.classList.add('active');
-
-      document.querySelectorAll('[data-tab="' + tabName + '"]').forEach(b => b.classList.add('active'));
-
-      const oc = bootstrap.Offcanvas.getInstance(document.getElementById('sidebarOffcanvas'));
-      if (oc) oc.hide();
-    }
-
-    document.querySelectorAll('.nav-item-dash').forEach(btn => {
-      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-    });
-
-    // ── Modal helpers ─────────────────────────────────────────
-    const overlay = document.getElementById('modalOverlay');
-    document.getElementById('modalClose').addEventListener('click', () => {
-      overlay.style.display = 'none';
-    });
-    overlay.addEventListener('click', e => {
-      if (e.target === overlay) overlay.style.display = 'none';
+    // Cierra el offcanvas al cambiar de tab (admin.js maneja el resto)
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const oc = bootstrap.Offcanvas.getInstance(document.getElementById('sidebarOffcanvas'));
+        if (oc) oc.hide();
+      });
     });
   </script>
 
