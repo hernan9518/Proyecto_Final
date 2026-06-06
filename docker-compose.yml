@@ -1,0 +1,47 @@
+version: "3.9"
+
+# ──────────────────────────────────────────────────────────────
+#  docker-compose.yml
+#  Proyecto: Sistema de Reportes
+#  Servicios: web (PHP+Apache)
+#  Base de datos: Supabase (externa, no corre en Docker)
+# ──────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Servidor web PHP + Apache ──────────────────────────────
+  web:
+    build:
+      context: .          # usa el Dockerfile de esta carpeta
+      dockerfile: Dockerfile
+    container_name: reportes_web
+    restart: unless-stopped
+
+    ports:
+      - "8080:80"          # accede en http://localhost:8080
+
+    environment:
+      # ── Conexión a Supabase (Transaction Pooler) ───────────
+      # Cambia estos valores por los de tu proyecto en supabase.com
+      # Settings → Database → Connection string → PHP (PDO)
+      DB_HOST: ${DB_HOST}           # ej: aws-0-us-east-1.pooler.supabase.com
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:-postgres}
+      DB_USER: ${DB_USER}           # ej: postgres.xxxxxxxxxxxx
+      DB_PASS: ${DB_PASS}           # tu contraseña de Supabase
+
+    volumes:
+      # Persistir uploads sin perder archivos al rebuilder
+      - uploads_data:/var/www/html/uploads/reportes
+
+    networks:
+      - reportes_net
+
+# ── Volúmenes ─────────────────────────────────────────────────
+volumes:
+  uploads_data:
+
+# ── Red interna ───────────────────────────────────────────────
+networks:
+  reportes_net:
+    driver: bridge
