@@ -101,7 +101,7 @@ $user = $_SESSION["user"];
     }
 
     /* SIDEBAR (offcanvas en móvil, columna en desktop) */
-    .nav-item-dash {
+    .nav-item {
       display: flex;
       align-items: center;
       gap: .55rem;
@@ -119,8 +119,8 @@ $user = $_SESSION["user"];
       cursor: pointer;
     }
 
-    .nav-item-dash:hover,
-    .nav-item-dash.active {
+    .nav-item:hover,
+    .nav-item.active {
       background: var(--udenar-green);
       color: #fff;
     }
@@ -319,32 +319,26 @@ $user = $_SESSION["user"];
 <body>
 
   <!-- ═══════════════ HEADER ═══════════════ -->
-  <header class="panel-header">
-    <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
-
-      <!-- Izquierda: logo + título + toggle móvil -->
-      <div class="d-flex align-items-center gap-2">
-        <!-- Toggle sidebar (solo móvil) -->
-        <button class="btn btn-sm d-md-none me-1 p-1"
-                style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;"
-                type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Menú">
-          <i class="bi bi-list fs-5"></i>
-        </button>
-        <div class="brand-seal">
-          <img src="../img/logo.png" alt="Logo Universidad de Nariño" />
-        </div>
-        <span class="panel-brand-text">Sistema de Reportes</span>
+  <header class="panel-header" style="display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:wrap;gap:.5rem;padding:.6rem 1rem;">
+    <!-- Izquierda -->
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-sm d-md-none p-1"
+              style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;"
+              type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Menú">
+        <i class="bi bi-list fs-5"></i>
+      </button>
+      <div class="brand-seal">
+        <img src="../img/logo.png" alt="Logo Universidad de Nariño" />
       </div>
-
-      <!-- Derecha: badge + nombre + logout -->
-      <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span class="role-badge usuario">Estudiante</span>
-        <span class="user-name d-none d-sm-inline">
-          <?= htmlspecialchars($user["nombres"] . " " . $user["apellidos"]) ?>
-        </span>
-        <a href="../php/logout.php" class="btn-logout">Cerrar sesión</a>
-      </div>
-
+      <span class="panel-brand-text">Sistema de Reportes</span>
+    </div>
+    <!-- Derecha -->
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <span class="role-badge usuario">Estudiante</span>
+      <span class="user-name d-none d-sm-inline">
+        <?= htmlspecialchars($user["nombres"] . " " . $user["apellidos"]) ?>
+      </span>
+      <a href="../php/logout.php" class="btn-logout">Cerrar sesión</a>
     </div>
   </header>
 
@@ -356,10 +350,10 @@ $user = $_SESSION["user"];
     </div>
     <div class="offcanvas-body p-2">
       <div class="d-flex flex-column gap-1">
-        <button class="nav-item-dash active" data-tab="nuevo" onclick="switchTab('nuevo')">
+        <button class="nav-item active" data-tab="nuevo">
           <i class="bi bi-pencil-square"></i> Nuevo Reporte
         </button>
-        <button class="nav-item-dash" data-tab="historial" onclick="switchTab('historial')">
+        <button class="nav-item" data-tab="historial">
           <i class="bi bi-clipboard-data"></i> Mis Reportes
         </button>
       </div>
@@ -372,10 +366,10 @@ $user = $_SESSION["user"];
     <!-- SIDEBAR desktop (oculto en móvil) -->
     <aside class="d-none d-md-flex flex-column gap-1 p-3 sidebar-col"
            style="background:#fff;border-right:1px solid #dde5d9;">
-      <button class="nav-item-dash active" data-tab="nuevo">
+      <button class="nav-item active" data-tab="nuevo">
         <i class="bi bi-pencil-square"></i> Nuevo Reporte
       </button>
-      <button class="nav-item-dash" data-tab="historial">
+      <button class="nav-item" data-tab="historial">
         <i class="bi bi-clipboard-data"></i> Mis Reportes
       </button>
     </aside>
@@ -518,23 +512,12 @@ $user = $_SESSION["user"];
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // ── Tab switching (desktop sidebar + offcanvas) ──────────────
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-item-dash').forEach(b => b.classList.remove('active'));
-
-      const panel = document.getElementById('tab-' + tabName);
-      if (panel) panel.classList.add('active');
-
-      document.querySelectorAll('[data-tab="' + tabName + '"]').forEach(b => b.classList.add('active'));
-
-      // Cerrar offcanvas si está abierto
-      const oc = bootstrap.Offcanvas.getInstance(document.getElementById('sidebarOffcanvas'));
-      if (oc) oc.hide();
-    }
-
-    document.querySelectorAll('.nav-item-dash').forEach(btn => {
-      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    // Cierra el offcanvas al cambiar de tab (complementa dashboard.js)
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const oc = bootstrap.Offcanvas.getInstance(document.getElementById('sidebarOffcanvas'));
+        if (oc) oc.hide();
+      });
     });
   </script>
 
